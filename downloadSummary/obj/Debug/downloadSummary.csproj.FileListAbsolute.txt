@@ -1,0 +1,10 @@
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\bin\Debug\downloadSummary.exe.config
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\bin\Debug\downloadSummary.exe
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\bin\Debug\downloadSummary.pdb
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.csprojAssemblyReference.cache
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.Form1.resources
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.Properties.Resources.resources
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.csproj.GenerateResource.cache
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.csproj.CoreCompileInputs.cache
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.exe
+C:\Users\kwoon\Desktop\Programming\downloadSummary\downloadSummary\obj\Debug\downloadSummary.pdb
