@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Diagnostics;
+using System.Media;
 
 namespace downloadSummary
 {
@@ -21,18 +24,38 @@ namespace downloadSummary
         }
 
         string pathToDownloadCounters = @"C:\Users\kwoon\Desktop\Programming\downloadCounters\downloadCounters\bin\Debug\";
-        private void Button1_Click(object sender, EventArgs e)
+        private async void Button1_Click(object sender, EventArgs e)
         {
-            string test = "gibberish<test yoyoyo>hahaha</test>gibberish";
-            string html = @"<a href=""//markets.ft.com/data/equities/tearsheet/summary?s=DFK:FRA"" class=""mod-ui-link"" data-oda=""{"" category"":""link="""" click="""" through"",""name"":""equities="""" tearsheet"",""label"":""mod-equities-results"",""value"":null}""="""" data-oda-event=""click""><span class=""mod-ui-hide-xsmall"">01 Communique Laboratory Inc</span><span class=""mod-ui-hide-small-above"">DFK:FRA</span></a>";
+            //Testf();
+
+            //string test = "gibberish<test yoyoyo>hahaha</test>gibberish";
+            //string html = @"<a href=""//markets.ft.com/data/equities/tearsheet/summary?s=DFK:FRA"" class=""mod-ui-link"" data-oda=""{"" category"":""link="""" click="""" through"",""name"":""equities="""" tearsheet"",""label"":""mod-equities-results"",""value"":null}""="""" data-oda-event=""click""><span class=""mod-ui-hide-xsmall"">01 Communique Laboratory Inc</span><span class=""mod-ui-hide-small-above"">DFK:FRA</span></a>";
 
             //var parsed = ExtractAndParse(ref test, "<test", "</test>");
 
-            string input = File.ReadAllText(pathToDownloadCounters + "1.txt");
+            for (int a=1; ; a++)
+            {
+                if (File.Exists(pathToDownloadCounters + a + ".txt"))
+                {
+                    await ProcessFile(pathToDownloadCounters + a + ".txt");
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Debug.WriteLine("Finished");
+        }
+
+        async Task ProcessFile(string filename)
+        {
+            string input = File.ReadAllText(filename);
             var result = System.Text.RegularExpressions.Regex.Unescape(input);
             var decodeHtml = HttpUtility.HtmlDecode(result);
+            List<string> urlList = new List<string>();
+            Dictionary<string, string> urlDictionary = new Dictionary<string, string>();
+            string urlBase = @"https://markets.ft.com/data/equities/tearsheet/summary?s=";
 
-            //var parsed = ExtractAndParse(ref decodeHtml, "<tbody>", "</tbody>");
             var parsed = ExtractAndParse(ref decodeHtml, "<tr>", "</tr>"); // ignore first <tr>
 
             while (true)
@@ -40,11 +63,62 @@ namespace downloadSummary
                 var tr = ExtractAndParse(ref decodeHtml, "<tr>", "</tr>");
                 if (tr == "") break;
                 var td = Parser(tr, "<td", "</td>");
-                var spanText = Parser(td, @"<span class=""mod-ui-hide-xsmall"">", "</span>");
+                if (td == "") continue;
+                var companyDescription = Parser(td, @"<span class=""mod-ui-hide-xsmall"">", "</span>");
 
                 var match = Regex.Match(td, @"\?s=(.*?)\""");
-                var matchedText = match.Groups[1].Value;
+                if (match.Success)
+                {
+                    var companyCode = match.Groups[1].Value;
+                    urlList.Add(urlBase + companyCode);
+
+                    if (!urlDictionary.ContainsKey(companyCode))
+                        urlDictionary.Add(companyCode, urlBase + companyCode);
+                }
+
             }
+
+            foreach (var v in urlDictionary)
+            {
+                Debug.WriteLine("Downloading " + v.Value);
+                await DownloadCompany(v.Key, v.Value);
+            }
+        }
+
+        async Task DownloadCompany (string companyCode, string url)
+        {
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            string toTxtName = companyCode + ".txt";
+
+            foreach (char c in invalid)
+            {
+                toTxtName = toTxtName.Replace(c.ToString(), "_");
+            }
+
+            if (File.Exists(toTxtName)) return;
+
+            WebClient wc = new WebClient();
+            string downloadText;
+            try
+            {
+                downloadText = await wc.DownloadStringTaskAsync(url);
+            }
+            catch
+            {
+                //SystemSounds.Asterisk.Play();
+                Debug.WriteLine("Error downloading " + url);
+                return;
+            }
+
+            File.WriteAllText(toTxtName, downloadText);
+        }
+
+        void Testf()
+        {
+            string apple = @"C:\Temp\Apple.html";
+            string input = File.ReadAllText(apple);
+            var result = System.Text.RegularExpressions.Regex.Unescape(input);
+            var decodeHtml = HttpUtility.HtmlDecode(result);
         }
 
         string ExtractAndParse (ref string input, string tag, string endTag)
