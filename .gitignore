@@ -1,3 +1,4 @@
 
 *.txt
 .vs/downloadSummary/v16/Server/sqlite3/db.lock
+*.htm

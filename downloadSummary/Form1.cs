@@ -88,7 +88,7 @@ namespace downloadSummary
         async Task DownloadCompany (string companyCode, string url)
         {
             string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            string toTxtName = companyCode + ".txt";
+            string toTxtName = companyCode + ".htm";
 
             foreach (char c in invalid)
             {
