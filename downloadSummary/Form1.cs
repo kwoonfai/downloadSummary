@@ -136,8 +136,8 @@ namespace downloadSummary
         {
             if (!tag.EndsWith(">"))
             {
-                int pos1 = input.IndexOf(tag);
-                int pos2 = input.IndexOf(">", pos1 + 1);
+                int pos1 = input.IndexOf(tag); if (pos1 == -1) return ""; // LKF: 26 Jul
+                int pos2 = input.IndexOf(">", pos1 + 1); if (pos2 == -1) return ""; // LKF: 26 Jul
                 tag = input.Substring(pos1, pos2 - pos1 + 1);
                 if (tag == "") return "";
             }
@@ -159,8 +159,8 @@ namespace downloadSummary
         {
             if (!tag.EndsWith(">"))
             {
-                int pos1 = input.IndexOf(tag);
-                int pos2 = input.IndexOf(">", pos1 + 1);
+                int pos1 = input.IndexOf(tag); if (pos1 == -1) return ""; // LKF: 26 Jul
+                int pos2 = input.IndexOf(">", pos1 + 1); if (pos2 == -1) return ""; // LKF: 26 Jul
                 tag = input.Substring(pos1, pos2 - pos1 + 1);
                 if (tag == "") return "";
             }
